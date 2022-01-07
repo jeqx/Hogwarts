@@ -19,11 +19,18 @@ public class CandidatesController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Gets All the candidates of Hogwarts
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<List<CandidateDTO>>> Get()
     => mapper.Map<List<CandidateDTO>>(await context.Candidates.ToListAsync());
 
-   
+    /// <summary>
+    /// Gets one the candidate of Hogwarts
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("{id:int}", Name = "GetCandidate")]
     public async Task<ActionResult<CandidateDTO>> Get (int id)
     {
@@ -33,7 +40,10 @@ public class CandidatesController : ControllerBase
         return mapper.Map<CandidateDTO>(entidad);
     }
     
-    
+    /// <summary>
+    /// Creates a new candidate to Hogwarts
+    /// </summary>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult> Post ([FromForm] CandidateCreationDTO candidateCreationDTO)
     {
@@ -48,6 +58,10 @@ public class CandidatesController : ControllerBase
         return new CreatedAtRouteResult("GetCandidate", new{id = candidateDTO.Id}, candidateDTO);
     }
 
+    /// <summary>
+    /// Modifies an existing the candidate of Hogwarts
+    /// </summary>
+    /// <returns></returns>
     [HttpPut("{id}")]
     public async Task<ActionResult> Put (int id, [FromForm] CandidateCreationDTO candidateCreationDTO)
     {
@@ -63,6 +77,10 @@ public class CandidatesController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Remove a candidate of Hogwarts
+    /// </summary>
+    /// <returns></returns>
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete (int id)
     {
