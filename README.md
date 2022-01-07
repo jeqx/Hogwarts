@@ -1,6 +1,7 @@
 # Hogwarts
  Web-API Rest with ASP.Net Core 6
 
+Architecture Pattern: Layers
 Middleware: OpenAPI(swagger)
  
 with nuget:
