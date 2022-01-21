@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Hogwarts.Api.DTOs;
+using Hogwarts.Api.Entities;
 
 namespace Hogwarts.Api.Controllers;
 
@@ -9,13 +10,13 @@ namespace Hogwarts.Api.Controllers;
 [Route("api/candidates")]
 public class CandidatesController : ControllerBase
 {
-    private readonly IMapper mapper;
-    private readonly ApplicationDbContext context;
+    private readonly IMapper _mapper;
+    private readonly ApplicationDbContext _context;
 
     public CandidatesController(ApplicationDbContext context, IMapper mapper) 
     {
-        this.context = context;
-        this.mapper = mapper;
+        this._context = context;
+        this._mapper = mapper;
 
     }
 
@@ -24,20 +25,20 @@ public class CandidatesController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<List<CandidateDTO>>> Get()
-    => mapper.Map<List<CandidateDTO>>(await context.Candidates.ToListAsync());
+    public async Task<ActionResult<List<CandidateDto>>> Get()
+    => _mapper.Map<List<CandidateDto>>(await _context.Candidates.ToListAsync());
 
     /// <summary>
     /// Gets one the candidate of Hogwarts
     /// </summary>
     /// <returns></returns>
     [HttpGet("{id:int}", Name = "GetCandidate")]
-    public async Task<ActionResult<CandidateDTO>> Get (int id)
+    public async Task<ActionResult<CandidateDto>> Get (int id)
     {
-        var entidad = await context.Candidates.FirstOrDefaultAsync(x=>x.Id== id);
+        var entidad = await _context.Candidates.FirstOrDefaultAsync(x=>x.Id== id);
         if (entidad == null) return NotFound();
 
-        return mapper.Map<CandidateDTO>(entidad);
+        return _mapper.Map<CandidateDto>(entidad);
     }
     
     /// <summary>
@@ -45,17 +46,17 @@ public class CandidatesController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult> Post ([FromForm] CandidateCreationDTO candidateCreationDTO)
+    public async Task<ActionResult> Post ([FromForm] CandidateCreationDto candidateCreationDto)
     {
-        var entidad = mapper.Map<Candidate>(candidateCreationDTO);
+        var entidad = _mapper.Map<Candidate>(candidateCreationDto);
         
-        context.Add(entidad);
+        _context.Add(entidad);
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
         
-        var candidateDTO = mapper.Map<CandidateDTO>(entidad);
+        var candidateDto = _mapper.Map<CandidateDto>(entidad);
         
-        return new CreatedAtRouteResult("GetCandidate", new{id = candidateDTO.Id}, candidateDTO);
+        return new CreatedAtRouteResult("GetCandidate", new{id = candidateDto.Id}, candidateDto);
     }
 
     /// <summary>
@@ -63,15 +64,15 @@ public class CandidatesController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult> Put (int id, [FromForm] CandidateCreationDTO candidateCreationDTO)
+    public async Task<ActionResult> Put (int id, [FromForm] CandidateCreationDto candidateCreationDto)
     {
-        var candidateDB= await context.Candidates.FirstOrDefaultAsync(x=>x.Id==id);
+        var candidateDb= await _context.Candidates.FirstOrDefaultAsync(x=>x.Id==id);
 
-        if(candidateDB is null) return NotFound();
+        if(candidateDb is null) return NotFound();
 
-        candidateDB=mapper.Map(candidateCreationDTO,candidateDB);
+        candidateDb=_mapper.Map(candidateCreationDto,candidateDb);
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return NoContent();
 
@@ -84,12 +85,12 @@ public class CandidatesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete (int id)
     {
-        var existe = await context.Candidates.AnyAsync(x=>x.Id == id);
+        var existe = await _context.Candidates.AnyAsync(x=>x.Id == id);
 
         if(!existe) return NotFound();
 
-        context.Remove(new Candidate(){Id=id});
-        await context.SaveChangesAsync();
+        _context.Remove(new Candidate(){Id=id});
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }

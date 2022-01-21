@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+namespace Hogwarts.Api.Entities;
 
 public class Candidate
 {
@@ -9,4 +9,3 @@ public class Candidate
     public uint Age { get; set; }
     public House YouAspire { get; set; }
 }
-

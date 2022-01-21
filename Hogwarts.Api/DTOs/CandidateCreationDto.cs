@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace Hogwarts.Api.DTOs;
 
-public class CandidateCreationDTO
+public class CandidateCreationDto
 {   [Required]
     [StringLength (20)]
     [RegularExpression("^[a-zA-Z]*$", ErrorMessage ="Only char")]
