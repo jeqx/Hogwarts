@@ -11,4 +11,5 @@ public class ClassRoom : IId
     public TypeClassRoom Type { get; set; }
 
     public int WeeklyHours { get; set; }
+  
 }

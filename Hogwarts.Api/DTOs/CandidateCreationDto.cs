@@ -26,4 +26,7 @@ public class CandidateCreationDto
     [EnumDataType(typeof(House))]    
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public House YouAspire { get; set; }
+    
+    public List<int> ClassRoomsIdsList { get; set; }
+
 }

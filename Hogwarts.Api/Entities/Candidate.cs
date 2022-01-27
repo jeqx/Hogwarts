@@ -8,4 +8,5 @@ public class Candidate
     public ulong Dni { get; set; }
     public uint Age { get; set; }
     public House YouAspire { get; set; }
+    public List<CandidateClassRoom> CandidateClassRoomsList { get; set; }
 }

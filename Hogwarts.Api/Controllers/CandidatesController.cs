@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Hogwarts.Api.DTOs;
 using Hogwarts.Api.Entities;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Hogwarts.Api.Controllers;
 
@@ -48,15 +49,24 @@ public class CandidatesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post ([FromForm] CandidateCreationDto candidateCreationDto)
     {
-        var entidad = _mapper.Map<Candidate>(candidateCreationDto);
-        
-        _context.Add(entidad);
+        if (candidateCreationDto.ClassRoomsIdsList is null) 
+            return BadRequest("It is not possible to create a candidate without assigning a classroom");
+      
+        var classRoomIds = await _context.ClassRooms
+            .Where(ccrDb => candidateCreationDto.ClassRoomsIdsList.Contains(ccrDb.Id))
+            .Select(x => x.Id).ToListAsync();
+
+        if (candidateCreationDto.ClassRoomsIdsList.Count != classRoomIds.Count) 
+            return BadRequest("Classroom does not exist");
+        var candidate = _mapper.Map<Candidate>(candidateCreationDto);
+        _context.Add(candidate);
 
         await _context.SaveChangesAsync();
         
-        var candidateDto = _mapper.Map<CandidateDto>(entidad);
+        var candidateDto = _mapper.Map<CandidateDto>(candidate);
         
-        return new CreatedAtRouteResult("GetCandidate", new{id = candidateDto.Id}, candidateDto);
+        return new CreatedAtRouteResult("GetCandidate", new{id = candidate.Id}, candidateDto);
+
     }
 
     /// <summary>
@@ -91,7 +101,6 @@ public class CandidatesController : ControllerBase
 
         _context.Remove(new Candidate(){Id=id});
         await _context.SaveChangesAsync();
-
         return NoContent();
     }
 
